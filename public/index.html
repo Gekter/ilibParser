@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <title>lab3</title>
+
+</head>
+<body>
+  <div class="container">
+    <select id="date" class="form-select form-select-lg mb-3 mt-2" aria-label=".form-select-lg example">
+
+    </select>
+  
+    <select id="author" class="form-select" aria-label=".form-select-sm example">
+  
+    </select>
+  
+    <div id="links" class="mt-2">
+      <ul class="list-group">
+
+      </ul>
+    </div>
+  </div>
+  
+  
+
+  <script>
+    let DB = {};
+    (async () => {
+      DB = await(await fetch('./result.json')).json();
+      let sel = document.querySelector('#date')
+      for (let key in DB) {
+        let option = document.createElement('option')
+        option.innerText = key
+        sel.append(option)
+      }
+      selectDate()
+    })();
+
+    function selectAuthor() {
+      let links = document.querySelector('#links ul')
+      links.innerHTML = ''
+      DB[document.querySelector('#date').value][document.querySelector('#author').value].forEach(el => {
+        let link = document.createElement('a')
+        link.href = el.url
+        link.innerText = el.bookName
+        let li = document.createElement('li')
+        li.append(link)
+        li.classList.add('list-group-item')
+        links.append(li)
+      });
+    }
+
+    function selectDate() {
+      let authorSel = document.querySelector('#author')
+      authorSel.innerHTML = ''
+      for (let author in DB[document.querySelector('#date').value]) {
+        let option = document.createElement('option')
+        option.innerText = author
+        authorSel.append(option)
+      }
+      selectAuthor()
+    }
+    
+    document.querySelector('#date').addEventListener('change', selectDate)
+
+    document.querySelector('#author').addEventListener('change', selectAuthor)
+
+
+  </script>
+</body>
+</html>
